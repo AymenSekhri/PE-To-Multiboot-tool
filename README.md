@@ -27,4 +27,4 @@ menuentry "OS" {
 ```%Multiboot.exe% $(OutDir)$(TargetFileName)```<br>
 Replace %Multiboot.exe% by Multiboot.exe full path.<br>
 This command runs the tool with output file of the kernel each build to add the grub multiboot header to it and call mkgrub-rescue to create the bootable iso.<br>
-7- Build the Kernel and Now you have bootable ISO could be tested on VMware.(you can specify the iso output path in Multiboot.cpp line 79).
+7- Build the Kernel and Now you have bootable ISO could be tested on VMware.(you can specify the iso output path in Multiboot.cpp line 95).
