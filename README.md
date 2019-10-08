@@ -21,8 +21,8 @@ menuentry "OS" {
 }
 ```
 5- Create your kernel using Visual Studio and make sure you add these option to the linker:<br>
-/FILEALIGN:4096 to make file alignment to 0x1000<br>
-/BASE:"0x100000" to make to ImageBase to be 0x100000<br>
+```/FILEALIGN:4096``` to make file alignment to 0x1000<br>
+```/BASE:"0x100000"``` to make to ImageBase to be 0x100000<br>
 6- Add the following command to Post-Build events in Visual Studio (Properties -> Build Events -> Post Build Events -> Command Line)<br>
 ```%Multiboot.exe% $(OutDir)$(TargetFileName)```<br>
 Replace %Multiboot.exe% by Multiboot.exe full path.<br>
