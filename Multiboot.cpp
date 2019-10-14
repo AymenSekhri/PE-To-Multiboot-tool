@@ -22,9 +22,42 @@ std::string ReplaceAll(std::string str, const std::string& from, const std::stri
 	}
 	return str;
 }
+void CreateProcessAndWait(char* proc) {
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+
+
+	// Start the child process. 
+	if (!CreateProcessA(NULL,   // No module name (use command line)
+		proc,        // Command line
+		NULL,           // Process handle not inheritable
+		NULL,           // Thread handle not inheritable
+		FALSE,          // Set handle inheritance to FALSE
+		0,              // No creation flags
+		NULL,           // Use parent's environment block
+		NULL,           // Use parent's starting directory 
+		&si,            // Pointer to STARTUPINFO structure
+		&pi)           // Pointer to PROCESS_INFORMATION structure
+		)
+	{
+		printf("CreateProcess failed (%d).\n", GetLastError());
+		return;
+	}
+
+	// Wait until child process exits.
+	WaitForSingleObject(pi.hProcess, INFINITE);
+
+	// Close process and thread handles. 
+	CloseHandle(pi.hProcess);
+	CloseHandle(pi.hThread);
+}
 #define LOADBASE 0x00100000 // default load base of grub
 int main(int argc, char** argv)
-{	
+{
 
 	//Open PE file.
 	printf("Adding MultiBoot header to : %s.\n", argv[1]);
@@ -86,14 +119,13 @@ int main(int argc, char** argv)
 	CloseHandle(hFile);
 	printf("Multiboot header has been added successfully.\n");
 
-	//Create iso file using grub-mkrescue in WSL.
-	std::string linux_outpath = argv[1];
-	linux_outpath = ReplaceAll(linux_outpath, "\\", "/");
-	linux_outpath = ReplaceAll(linux_outpath, "C:", "c");
-	
-	char wsl_command[0x200];
-	snprintf(wsl_command, sizeof(wsl_command), "c:/windows/sysnative/bash -c \"cp /mnt/%s /mnt/c/users/0xCC/Desktop/os/boot/OSKernel.exe && grub-mkrescue -o /mnt/c/users/0xCC/Desktop/bootable0.iso /mnt/c/users/0xCC/Desktop/os/\"", linux_outpath.c_str());
-	system(wsl_command);
 
+	//Use Qemu
+	char command[0x200];
+	snprintf(command, sizeof(command), "\"C:\\Program Files\\qemu\\qemu-system-i386.exe\" -kernel \"%s\"", argv[1]);
+	CreateProcessAndWait((char*)command);
+
+
+	
 	return FALSE;
 }
