@@ -1,5 +1,5 @@
 # PE-To-Multiboot-tool
-This too converts PE files in windows into a kernel could be booted from grub.
+This tool converts PE files in windows into a kernel that could be booted from grub.
 It's for the ones who prefer to use visual studio in windows to do OSDev tutorials.
 # How To Use
 1- Install Qemu.<br>
